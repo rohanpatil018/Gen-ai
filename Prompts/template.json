@@ -1,0 +1,17 @@
+{
+    "name": null,
+    "input_variables": [
+        "length_input",
+        "paper_input",
+        "style_input"
+    ],
+    "optional_variables": [],
+    "output_parser": null,
+    "partial_variables": {},
+    "metadata": null,
+    "tags": null,
+    "template": "\nYou are an AI research assistant.\n\nExplain the research paper \"{paper_input}\" in a {style_input} style.\n\nThe explanation should be {length_input}.\n\nInclude:\n1. Problem Statement\n2. Key Idea\n3. Architecture\n4. Advantages\n5. Limitations\n6. Real-world Applications\n",
+    "template_format": "f-string",
+    "validate_template": false,
+    "_type": "prompt"
+}

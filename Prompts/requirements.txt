@@ -1,0 +1,29 @@
+# Streamlit
+streamlit==1.50.0
+
+# LangChain
+langchain
+langchain-core
+
+# Google Gemini
+langchain-google-genai
+google-generativeai
+
+# OpenAI
+langchain-openai
+openai
+
+# Anthropic
+langchain-anthropic
+
+# Hugging Face
+langchain-huggingface
+transformers
+huggingface-hub
+
+# Environment Variables
+python-dotenv
+
+# ML
+numpy
+scikit-learn

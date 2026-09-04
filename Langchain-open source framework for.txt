@@ -1,0 +1,578 @@
+Langchain->open source framework for developing applicaton by LLM
+
+why we need langchain
+->Computation(Difficult to bilud the brain of the system)->api
+->Orchestrain System
+->keyword Search
+->Semantic Search->embedding->vectors
+
+
+with Examples
+
+pdf->asw s3->pdf->chunks(text split)->Embeddings->database^|Brain(llm)>Final Output(-<Semantic search-<embedding-<user query)
+
+
+Benefits of Langchain->
+->Concept of chains(pipelines)
+->Model Agnostic Development(Can use any model)
+->Complete Ecosystem
+->Memory and state handling
+
+
+what to build
+->conversational chatbot
+->Ai knowledge assistants
+->AI agents
+->workflow automations
+->Summarization/Research Helpers
+
+Alternatives->Lammindex,haystack
+-----------------------------------
+Core Components of Langchain
+1)Model->are the core interfaces through which you interact with ai models(Same code for using any model API)
+->Language model->LLMS
+->Embedding Models->text(input(text)->vector(output)-semantic search
+
+2)Prompts->LLM-<input->prompt
+-dynamic and reusable prompts
+-role based pormpts
+-Few Shot Prompting(examples->Input)
+
+3)Chains->Pipelines->LLM-|-Pipelines
+-parallel chain
+-conditional chain
+
+4)Memory->LLM api call are stateless
+-ConversationalBufferMemory->stores a trabnscript of recent messages.great for Short chats but can grow large quickly
+
+-ConversationalBufferwindowMemory->Only keeps the last N interactions to avoid excessive token usage
+
+-summarizer-based memory->periodically summarizes older chats segments to keep a condensed memory footprint
+
+-custom memory->for advanced use cas you can store specialized state
+
+
+5)Indexes->Indexes conncet your application to external knowledge such as pdfs-
+-doc loader
+-text splitter
+-vector store
+-retrivels
+
+6)Agents->
+-----------------------------------
+
+**Models in Langchain**
+->Language Models-(LLMs,Chatbot)
+LLMs->general purpose models can be used for any work(string->string)
+ChatModels->Conversational task
+(IMp)
+
+-Closed Source
+-open source model
+
+->embedding models
+-closed
+-open source
+
+Setup
+->create a new folder
+->open it in vs code
+->create an new venv
+   python -m venv venv
+->activate it venv\Scripts\Activate
+->create requirement.txt
+->install packages from requirement.txt
+    pip install -r requirement.txt
+->verify Langchain installation
+
+-----------------------------------
+temperature->is a parameter that controls the randomnesss of a language models.It affects how creative or deterministic the response are:
+lower values(0-0.3)-More deterministic and predictable
+higher value(0.7-1.5)-more random,creative and diverse
+use cases
+1)factual answers(maths,code,facts)-(0.0,0.3)
+2)Balanced response(general QA,explanation)-(0.5,0.7)
+3)creative writing storytelling(0.9,1.2)
+4)maximum randomness(wild,ideas,brainstroming)-1.5+
+
+-----------------------------------
+Prompts
+->these are the input instructions or queries given to model to guide its output
+1)text based
+2)Multimodel pormpts(image->sound->videos)
+
+Static and Dynamic prompts
+validation input
+
+we can use prompt templates as json file and just load that file.
+we can use chain to invoke multiple timess
+
+messages
+->system messages->hunam messages
+->AI messages
+
+message placeholder->is  a langchian special placeholder used inside a ChatPromptTemplate to dynamically insert chat history or a list of messages at tuntime
+--------------------------------------------------
+
+Structure Output
+In langchian Structured output refers to the practice of having language models return responses in a well-defined data format(for examples JSON),
+rather tha free from text. This makes model output easier to prase and work with programatically.
+
+[Prompt]-can you create a one day-travel itinerary for paris
+[LLm's Unstructured Response]
+Here's Suggested itinerary:Morning :Visit the effiel Tower
+Afternoon:Walk through the lavoure Museum
+
+json format:[
+    {
+      "time": "Morning",
+      "activity": "Visit the Eiffel Tower"
+    },
+    {
+      "time": "Afternoon",
+      "activity": "Walk through the Louvre Museum"
+    }
+  ]
+
+
+why we need structured output
+->Data Extraction
+->APi Building
+->Agents, etc.
+
+LLM->1)By deafult produce Structured output(with_structured_output function)
+     2)can't generate(Output_Parsers for US->ST)
+
+with_structured_output function->data format
+data format ->typed Dict,pydantic,josnschema 
+
+
+1)TypedDict->
+     TypedDict is a tool in Python used to define the exact structure (keys and value data types) of a dictionary.
+
+    It acts as a blueprint for your code so that tools and code editors (like VS Code) know what keys are required, but it does not validate data at runtime (meaning it won't throw an error if a value has the wrong type while your code is running; it's purely for type hinting).
+
+    example->from typing import TypedDict
+
+    # Define the blueprint
+    class Person(TypedDict):
+        name: str
+        age: int
+
+    # Use it in your code
+    user: Person = {"name": "Rohan", "age": 21}
+
+    why to use->
+    1)it tells python what keys are required
+     and what types of values theu should have.
+    2)it does not validate sata at runtime 
+
+2)Pydantic-> is data validation and parsing library fro pythonit ensures that the data you woek with is correct,structured and type-safe
+
+3)Json Schema->Cretea an Json schema and then apply same as pydantic jsu add json schma in the file and invoke the mdel and get results
+
+when to use which
+1)TypedDict->1)you only need type hints
+            2)you dont need validation
+            3)you trust the LLM to return correct data
+2)pydantic->1)YOu need data validation
+            2)you need default values if the LLm misses fields
+            3)You want automatic type conversational
+3)json->1)You dont want to import extra python libraries
+        2)you need valiation but dont need python objects
+        3)you want to define structure in a standard json format
+
+We can tell method with method object: json_mode and function_calling
+--------------------------------------------------------------------------------
+
+Output Prasers
+->in langchain help convert raw LLM response into Sturctured formats like JSON,CSV,Pydantic models and more.
+->They ensure the consistency, validation and ease of the use in applicatins
+
+1)String Output Parser
+2)JSon Output_Parsers
+3)Structure Output_Parsers->is an output parser in langchian that helps       extract structured JSON data from LLM responses on predefined filedd schemas.
+
+4)Pydantic Output_Parsers
+--------------------------------------------------------------------------------
+**Chains In Langchian**  ->
+What and WHy->
+      -Sequential Chains
+      -Parallel Chains
+      -Complex Chian(Multiple)
+
+-----------------------------------------------------------------------------------
+
+Runnables in Langchian->
+-Unit os Work
+-every Runnables has its own characher and follows common Interface(same methods)
+-we can connect multiple runnables
+-in original code it is a abstract method(invoke and many more) and then its used on other functions or class
+
+-Task Specific runnables->These are core langchin components that have been converted into runnabl so they can be used in pipelines
+                        -> it used to perform operations like LLM calls,Prompting,retrival etc.
+                        ->examples->ChatOpenAI()->ri=uns llm model
+                                    PromptTemplate()->formats prompts dynamically
+                                    Retriver->Retrivers relevant documents
+
+-Runnables Primitive->Definition: They are fundamental building blocks (or composition tools) in LangChain designed to define how execution flows between runnables.
+                    ->Purpose: They replace custom glue code by providing built-in operators and methods to structure workflows (e.g., sequential, parallel, conditional, etc.).
+                    ->example
+                      RunnableSequence()->runs steps in order(|)
+                      Runnableparallel->Runs Multiple steps simultaneously
+                      RunnableMap->map the smae input across multiple function
+                      RunnableBranch->implemments conditional execution
+                      RunnableLambda->wraps custom python functions into runnables
+                      RunnablePastthrough->just forwards input as output
+
+
+-Key Runnable Primitives & Their Uses
+1. Runnable Sequence (| operator)
+                            Purpose: Runs multiple steps sequentially, where the output of one component automatically becomes the input for the next.
+                            Syntax: chain = prompt | model | parser
+2. Runnable Parallel ({})
+                            Purpose: Executes multiple runnables simultaneously with the exact same input, returning a dictionary of results.
+                            Use Case: Generating multiple distinct outputs from a single prompt (e.g., creating a tweet and a LinkedIn post at the same time).
+3. Runnable Passthrough
+                            Purpose: Passes the input data through unchanged while allowing it to be routed alongside other parallel operations.
+                            Use Case: Retaining original variables (like a user's initial query) so they can be combined downstream with LLM outputs.
+4. Runnable Lambda
+                            Purpose: Wraps custom Python functions into runnables so they can be seamlessly integrated into LangChain pipelines.
+                            Use Case: Performing custom transformations, data parsing, or utility checks (like word counting) inline.
+5. Runnable Branch
+                              Purpose: Introduces conditional logic into workflows, routing inputs to different chains based on specific criteria or conditions.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-RAG
+    ->it is a technique that combines information retirver with language generation
+    where model retrives relavent document from a knowledge base and then uses them as
+    context to generate accurate and grounded responses.
+
+    Benefits->1)Use-up-to date information
+              2)Better Privacy
+              3)No limit of document size.
+
+
+Components->Document Loaders
+          ->Text splitter
+          ->Vector database
+          ->Retriver
+
+
+Document Loaders->are components in langchian used to load data from various sources into a
+                  standardized fromat(usually as doucment object), which can then be used for chunking
+                  embedding,Retriverand generation.
+
+                  Document(
+                    page_content="technique actual text content",
+                    metadata={"source":"filename.pdf",...}
+                  )
+
+
+1)textLoader-> is a simply and common used document loaderin langchian that reads plain text
+              (.txt) files and converts them into langchian Document objects.
+
+            Use Case->Ideal for loading chat logs,scraped text,transcripts and code snippets,or any plain text data
+            into a langchian pipelines
+
+            limitation->works only for .txt files
+
+2)PyPDFLoader-> is a document loader in Langchian used ton load content from pdf files and convert each page into a document object.
+             {
+              Document{page_content="text from page 1",metadata={"page":0,"source":"file.pdf"}},
+              Document{page_content="text from page 2",metadata={"page":1,"source":"file.pdf"}},
+             }
+
+
+             limitation->it uses PyPDF library under the hood-not great with scanned odfs or complex layouts.
+
+3)DirectoryLoader -> is a document loader in LangChain used to load multiple files from a directory (folder) at once using a specified loader class (like PyPDFLoader or TextLoader).
+
+                     Plaintext
+                     {
+                        Document{page_content="text from page 1 of book 1", metadata={"source": "book1.pdf", "page": 0}},
+                        Document{page_content="text from page 1 of book 2", metadata={"source": "book2.pdf", "page": 0}},
+                        ...
+                     }
+                     How it works: It uses file patterns (like *.pdf) to scan a folder and load all matching files into a list of document objects.
+
+                     Limitation / Key Consideration: Because it loads everything at once, using .load() can consume a lot of memory and take time if you have a massive folder of large files. For large datasets, you should use lazy_load() to load documents one by one on demand.
+
+fro multiple files there  required more time for loading 
+Solution->Lazy loading
+
+->load()->Eager Loading(Loads Everything at once)
+        ->Returns a list of document objects.
+        ->Loads all documents immediately into memory.
+        best when->The number of documents is small,you want everything loaded upfront.
+
+->lazy_load()->Loads on demand,Returns a genrator of document objects.
+             ->documents are not all loaded at once they're fetched one at a time as needed.
+             ->best when->Your are dealing with large documents or lots of files.
+                          You want to stream processing.(chunk embedding) without using lots of money.
+
+
+4)Web base Loader-> is a document loader in langchian used to load and extract text content from web pages.
+                ->it uses beautifulsoap user the hood to parse html can extract visible text.
+                when to use->For blogs,news article,or public websites where the content primarily text-based and Static
+                ->it dosen't handle javascript-heavy pages well(use SeleniumURLLoader for that)
+                ->loads only static content(whats in the html,not what loads after the page renders)
+
+5)CSV Loader->to lioad csv files.
+
+
+
+-----------------------------------------------------------------------------
+
+Text SPlitting-> It is a process of breaking large chink of text like articles
+                 PDFs,HTML pages or books into cmaller manageable pieces than an llm can handle effectively
+                
+3 key reasons why text splitting is required for LLM-based applications:
+
+Overcoming Model Context Limits: Large language models (LLMs) have a strict maximum input size or token limit. Sending massive documents (such as books or thousands of pages) all at once exceeds this threshold, making text splitting necessary to process data successfully within model constraints.
+
+Better Downstream Task Performance: Breaking text into smaller chunks improves the quality of critical tasks like embeddings (capturing semantic meaning more accurately), semantic search (retrieving more precise query results), and summarization (reducing hallucinations and context drift).
+
+Optimizing Computational Resources: Working with smaller text chunks is more memory-efficient and reduces hardware or computing requirements, which also allows for better parallelization of data processing tasks.
+
+Core Concepts: Chunk Size & Chunk Overlap
+Chunk Size: The maximum number of characters (or tokens) allowed in a single chunk.
+
+Chunk Overlap: The number of characters/tokens shared between consecutive chunks.
+
+Purpose: Prevents abrupt context loss when sentences or paragraphs are split midway.
+
+Best Practice: Typically set to 10% to 20% of the chunk size (e.g., if chunk size is 500, overlap can be 50–100).
+
+Types->>
+
+Length-Based Text Splitting
+                Core Concept:
+                The simplest and fastest method of splitting text where you pre-determine the fixed size of each chunk.
+                You explicitly define a character size (or token count) limit.
+
+                How->
+                The algorithm traverses the text sequentially and creates a chunk as soon as the specified character/token limit is reached, then repeats the process for the remainder of the text.
+
+                Key Limitations:
+                It does not check for meaning, grammar, or linguistic structure.
+                Because it strictly cuts off at a set length, it can abruptly split words, sentences, or paragraphs in the middle, which can negatively impact the quality of downstream tasks like vector embeddings.
+
+Text-Structured Based->
+  1)\n\n->Paragraph.
+  2)\n->Line.
+  3)'_' ->word
+  4)" . " ->character
+
+
+  first it will spilt on basis of para then line and then word and then character.
+  
+2. Structure-Based Splitters (RecursiveCharacterTextSplitter)Overview: Most widely used industry standard.Mechanism: Recursively splits text using a hierarchy of separators (\n\n $\rightarrow$ \n $\rightarrow$   $\rightarrow$ "") until chunks fit the target size.Pros: Preserves sentence and paragraph boundaries as much as possible.Cons: Slightly more complex.
+
+3. Document-Specific Splitters (Language-Specific)Overview: Custom splitters designed for structured files (e.g., Python/JS code, Markdown).Mechanism: Uses syntax-aware tokens like classes, functions, or markdown headers.Pros: Keeps code blocks and logical syntax intact.Cons: Limited to specific file formats
+
+4. Semantic Splitters (SemanticChunker)Overview: Advanced splitters based on semantic meaning.Mechanism: Uses embeddings to measure cosine distance between consecutive sentences. Triggers a split if similarity drops sharply based on a threshold (such as Standard Deviation or Percentile).Pros: Groups text strictly by semantic topic shifts.Cons: Computationally expensive and currently experimental
+
+
+Frequently Asked Interview Questions & Answers
+Q: Which text splitter should you use by default in production?
+     A: RecursiveCharacterTextSplitter. It is robust, handles hierarchy gracefully, and prevents awkward mid-sentence breaks.
+
+Q: What happens if your chunk size is too small vs. too large?
+   Too Small: Loses broader context and global meaning.
+  Too Large: Dilutes semantic search precision, introduces noise, and risks exceeding token limits or causing LLM hallucination.
+
+Q: How do you connect Document Loaders with Text Splitters?
+     A: Load raw documents into Document objects (e.g., via PyPDFLoader), then pass the resulting documents into the text splitter's .split_documents() method.
+
+
+
+----------------------------------------------------------------------
+
+Vector Stores ->
+   It is a system designed to store and retrieve data represented as numerical vectors.
+   
+Features->
+Storage-> Ensures that vectors and their associated metadata are retained. Whether in-memory (RAM) for quick lookups or on-disk (Hard disk) for durability and large-scale use.
+Similarity Search->Helps retrieve the vectors most similar to a query vector.
+Indexing ->Provides a data structure or method that enables fast similarity searches on high-dimensional vectors.
+
+CRUD operations-> Manage the lifecycle of data—adding new vectors, reading them, updating existing entries, removing outdated vectors.
+
+Use Cases 
+Semantic Search
+RAG
+Recommender 
+SystemsImage and Multimedia Search
+
+
+Vector Stores vs. Vector Databases
+Vector Store:
+A broader term/abstraction for any system or library that indexes and stores numerical vectors to perform similarity searches.
+Can be purely in-memory libraries (like FAISS) that require custom handling for persistence, data updates, and metadata.
+
+Vector Database:
+A dedicated database system specifically engineered to manage vector data with full database capabilities.
+Natively handles CRUD operations (Create, Read, Update, Delete), data persistence on disk, built-in metadata filtering, security, scalability, and high concurrency out of the box.
+
+Chroma vs. FAISS: Which is Best and When to Use?
+1. FAISS (Facebook AI Similarity Search)
+What it is: A high-performance open-source similarity search library developed by Meta.
+
+Key Strengths: Blazing fast search speed, excellent memory efficiency, supports millions/billions of vectors, and provides native CPU/GPU acceleration.
+
+When to use:
+
+Working with massive scale datasets (millions of vectors).
+
+Raw speed, low latency, and high throughput are your top priorities.
+
+You are building a custom search engine backend and don't mind managing persistence/metadata separately.
+
+2. Chroma (ChromaDB)
+What it is: A lightweight, developer-friendly vector database.
+
+Key Strengths: Incredibly easy setup (pip install chromadb), built-in local persistence (saves directly to disk), and out-of-the-box native support for storing raw text, metadata, and running metadata filters.
+
+When to use:
+
+Rapid prototyping, local testing, and small-to-medium RAG applications.
+
+You want an easy developer experience (DX) without dealing with complex lower-level index configurations.
+
+
+Vector Stores in LangChainUnified Interface: LangChain provides a standard abstraction layer for vector stores, meaning you can swap out backends (e.g., switching from Chroma to FAISS) with minimal changes to your core application logic.Core Operations Supported:add_documents 
+
+from_documents: Embeds text chunks and saves them into the store.similarity_search: Queries the store using an embedding model to retrieve the top-$k$ most contextually relevant documents.delete: Removes records by ID.
+
+Common Integration Examples:
+Chroma: from langchain_community.vectorstores import Chroma (Best for local persistence & metadata filtering).
+FAISS: from langchain_community.vectorstores import FAISS (Best for high-speed, in-memory processing).
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Retrivers->
+It is a component in langchain that fetches relevent documents from a data source in response to user query's
+there are multiple types of Retrivers
+All Retrivers in Langchian are runnables.
+
+Types of Retrivers->
+
+1)Wikipedia retriever
+2)Vector Store
+3)Archive Retriver.
+
+Based on Search Category
+->MMR
+->Multi-Query
+->Convxival 
+
+WIkipedia Retriver->A Wikipedia retriever is a retriever that queries the Wikipedia API to fetch relevant content for a given copy.
+
+How it works->
+1)You give it a query
+2)it sends the query to Wikipedia's API
+3)It retrives the most relevant articles.
+4)it returns them as langchian document objects.
+
+
+top_k_results->how many doc we have to retrive.
+lang->en(English)
+
+
+2)Vector Store Retriver
+A vector store retriever in langchian is the most common type of retriever that lets you
+search and fetch decuments from a vector store based on semantic similarity using vector.
+
+working->
+1)You store your documents in a vector store.
+2)each documents is convberted into a dense vector using an embedding.
+3)When the user enters a query:
+   ->it's also turned into a vector.
+   ->The retriever compares the query vector with stored vectors.
+   ->it retrives the top-k most similar ones.
+
+3) MAximum Marginal Retriver
+ "How can we pick results that are not only relevant to the query but also different from each other?.
+
+->MMR is an info retrival algorithm designed to reduce redundancy in the retrived results while maintaining high relevance to the query. 
+
+
+4)Multi-Query Retriever->
+->What it is: An advanced retriever designed to handle ambiguous, vague, or broad user queries by automatically generating multiple variations of the query using an LLM.
+->Core Philosophy: Solves the problem of poor retrieval results caused by a single, poorly phrased user query. It expands the search perspective to maximize document recall.
+->How It Works:
+		->Query Input: The user submits a query (e.g., "How can I stay healthy?").
+		->LLM Query Generation: The query is sent to an LLM, which generates multiple related but distinct sub-queries (e.g., "What are the best foods to eat?", "How often should I exercise?", "How to manage stress?").Parallel Retrieval: Each generated query is sent independently to the underlying retriever (such as a vector store similarity search) to fetch matching documents.
+		->Merge and Deduplicate: All retrieved document lists are merged, duplicate documents are removed, and the top unique results are returned to the user.
+->When to Use-->
+		->When user queries are short, broad, or ambiguous.
+		->When a standard similarity search misses relevant context due to a single narrow keyword interpretation
+
+
+.2. Contextual Compression Retriever
+->What it is: An advanced retriever that improves retrieval quality and precision by compressing or trimming documents after they are retrieved, keeping only the specific content relevant to the user's query.
+->Core Philosophy: Standard retrieval might pull up a large document because it matches the query topic, but that document could also contain plenty of irrelevant information (noise). This retriever strips away the noise.
+->How It Works-->
+		1)Base Retrieval: A standard base retriever fetches a set of initial documents (e.g., top $K$ documents) based on the user's query.
+		2)Compressor Execution: Each retrieved document is passed through a compressor (typically an LLM or an extraction chain) alongside the user's query.
+		3)Content Filtering: The compressor evaluates the text and drops or trims out any sections, sentences, or paragraphs that do not directly address the query.
+		4)Clean Output: Only the highly focused, relevant sentences or snippets are returned to the final pipeline or user.
+->Why Documents Have Mixed Info-->
+		This often happens because of Text Splitters during data ingestion, where a large paragraph or section gets split across boundaries, mixing distinct topics into a single document chunk.
+->When to Use:
+	When handling long text chunks that contain mixed or multi-topic information.
+	When you want to reduce the context length sent to the final LLM and boost answer accuracy by removing irrelevant clutter.
+
+
+
+-----------------------------------------------------------------
+
+LangChain tools
+A tools is just a python function(or API) that is packaged in a way the LLM can understand and call when needed
+
+LLM can-1)Reasoning
+        2)Language generation
+    can't->1)Access live data,do reliable math,call apis,run code,interact with a database
+
+tools ->  Built In tools
+          Custom tools
+
+hoe fits into  Agents Ecesystem->
+An ai agent is an LLM powered systems that can autonomously think,decide and take actions using external tools or APIs to achieve goals
+
+
+1)Built in tools->
+    Wikipedia Tool (WikipediaQueryRun): Used to search and fetch summaries from Wikipedia.
+
+    Arxiv Tool (ArxivQueryRun): Used for querying scientific research papers and documents from arXiv.
+
+    Python REPL Tool (PythonREPLTool): Provides a Python shell environment to execute valid Python code or commands passed as input.
+
+    DuckDuckGo Search Tool (DuckDuckGoSearchRun): Used for performing web searches without requiring an API key.
+    Shell Tool->command line operation
+    etc.
+
+2)Custom tools->
+    1)you want to call youe own API
+    2)you want to encapsulate business logic
+    3)you want LLM to interact with your database,product or app
+
+
+    ->create function
+    ->type hinting
+    ->@tool decorator(makes it special fucntion)
+
+  2)Using StructuredTool and pydantic
+      is a special type of tool where the input to the tool follows a structured schema,typically defined using a pydantic model
+
+  3)Using basetool
+      basetool is a absctract base class for tools in langchain, it defines the core structure and interface that any tool must follow, Whether
+      it's simple one-linear or a fully customized function.
+
+      All other tool hypes like @tool,StructuredTool are built on top of basetool
+
+
+ToolKits->
+    A toolkit is jst collection of related tools serve a common purpose-packaged together for convenience and resualbility
