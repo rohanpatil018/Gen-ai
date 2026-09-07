@@ -573,6 +573,33 @@ An ai agent is an LLM powered systems that can autonomously think,decide and tak
 
       All other tool hypes like @tool,StructuredTool are built on top of basetool
 
+name->description of tool->schema for tools(this three values to be set while creating a tool)
 
 ToolKits->
     A toolkit is jst collection of related tools serve a common purpose-packaged together for convenience and resualbility
+
+
+Tool binding-> is the step where you register tools with a language model so that:
+                1)the llm knows what tools are available
+                2)it knows what each tool does
+                3)it knows waht input format to use(via schema)
+
+bind_tools([])->can accept multiple tool names seperated by comma             
+not all llm can bind with tools
+
+Tool Calling->it is a process where a llm decide during a conversation or task that it nees to usea specific tool(function)
+              and generate a structured output with:
+              1)the name of the tool
+              2)and the argumanets to call it with 
+
+      **LLM does not actually run the tool, it just suggest the tool and the input arguments.
+       the actual execution is handled by langchian or you**
+
+Tool Execution-> is the step where the actual python fucntion is run using the input arguments
+                that the LLM suggestion during tool calling.
+
+
+                LLM Say's->"How call the multiply tool with a=8 and b=7"
+                Tool execution->is when you or lamgchian actually run:
+                multiply(a=8,b=7)
+                ->and get the result:56
