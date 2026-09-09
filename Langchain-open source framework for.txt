@@ -603,3 +603,17 @@ Tool Execution-> is the step where the actual python fucntion is run using the i
                 Tool execution->is when you or lamgchian actually run:
                 multiply(a=8,b=7)
                 ->and get the result:56
+
+
+Multimodal Rag->
+Text+Images
+required Multimodal LLM
+-OPENAI-GPT-4
+Google gemini - 2.5 flash 
+
+1)PDf->Extaract Text & Images->[text->embeddings]->[Images->Embeddings](CLIP Model)
+->Store Images in BASE64 foramt->[vector db(FAISS)]
+
+Query->CLIP Embedding->vectorSearch[Retriver(text+images)]->LLM[Format Fixed]->Multimodal Answere
+
+CLIp->Contrastive Language Image PreTraining
